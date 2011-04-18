@@ -1,0 +1,463 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>Test Page</title>
+    <link type="text/css" rel="stylesheet" href="assets/events_preso.css">
+</head>
+<body class="yui3-skin-sam">
+<div class="yui3-slideshow">
+<ul id="preso" class="yui3-slideshow-content">
+
+    <li id="start" class="yui3-slide">
+    <div>
+        <h1>More than you want to know about <em>YUI 3 Custom Events</em></h1>
+        <p>Luke Smith</p>
+        <p>@ls_n</p>
+    </div>
+    </li>
+
+    <li id="dom1" class="yui3-slide">
+    <div>
+        <h2>(Click)</h2>
+
+        <pre><code>
+slideNode.on('click', function () {
+    slideshow.next();
+});
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="dom3" class="yui3-slide">
+    <div>
+        <h2><code>target.on(<em>object</em>)</code></h2>
+
+        <pre><code>
+Y.on(<em>{</em>
+    click: next,
+
+    keydown: function (e) {
+        if (e.keyCode === 37) {
+            previous();
+        } else if (e.keyCode === 39) {
+            next();
+        }
+    }
+<em>}</em>);
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="synth1" class="yui3-slide">
+    <div>
+        <h2><code>target.on(<em>array</em>, ...)</code></h2>
+        <p>(synthetic events via gallery-event-nav-keys)</p>
+
+        <pre><code>
+Y.one('win').on(<em>['click', 'right']</em>, next);
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="dom_bridge" class="yui3-slide">
+    <div>
+        <h2>Wait, this is about Custom Events.</h2>
+        <p class="c"><img src="dom_ce_bridge.png"></p>
+    </div>
+    </li>
+
+    <li id="custom_intro" class="yui3-slide">
+    <div>
+        <h2 class="solo">Custom events for realz!</h2>
+    </div>
+    </li>
+
+    <li id="notifications" class="yui3-slide">
+    <div>
+        <h2>Notifications (simple)</h2>
+
+        <pre><code>
+Y.<em>on</em>('hello', callback);
+
+// No publishing required
+Y.<em>fire</em>('hello');
+        </code></pre>
+
+    </div>
+    </li>
+
+    <li id="payload1" class="yui3-slide">
+    <div>
+        <h2>Notification data</h2>
+
+        <pre><code>
+Y.on('hello', function (<em>message</em>) {
+    show("Hello?\n" + message);
+});
+
+Y.fire('hello', <em>"Is it me you're looking for?"</em>);
+        </code></pre>
+
+    </div>
+    </li>
+
+    <li id="target1" class="yui3-slide">
+    <div>
+        <h2><code>EventTarget</code> + class</h2>
+
+        <pre><code>
+function Band(name) { ... }
+
+<em>Y.augment(Band, Y.EventTarget);</em>
+
+var mrT = new Band("Mr. T's bluegrass band");
+
+mrT.on('foo', function () { ... });
+
+mrT.fire('foo');
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="target2" class="yui3-slide">
+    <div>
+        <h2><code>EventTarget</code> + object</h2>
+
+        <pre><code>
+var myCat = {
+    name: 'Tank',
+};
+
+<em>Y.augment(myCat, Y.EventTarget);</em>
+
+myCat.fire('meow');
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="publish_intro" class="yui3-slide">
+    <div>
+        <h2 class="solo">The cool kids <code>publish(...)</code></h2>
+    </div>
+    </li>
+
+    <li id="facade1" class="yui3-slide">
+    <div>
+        <h2><code>emitFacade</code></h2>
+
+        <pre><code>
+myCat.publish('scratch', {
+    <em>emitFacade: true</em>
+});
+
+myCat.on('scratch', function (<em>e</em>) {
+    show("Please don't " + <em>e.type</em>);
+});
+
+myCat.fire('scratch');
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="payload2" class="yui3-slide">
+    <div>
+        <h2>Event facade payload</h2>
+
+        <pre><code>
+myCat.on('scratch', function (e) {
+    show("Not the " + <em>e.object</em> + "!");
+});
+
+myCat.fire('scratch', <em>{ object: 'couch' }</em>);
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="target2" class="yui3-slide">
+    <div>
+        <h2><code>EventTarget</code> config</h2>
+
+        <pre><code>
+Y.augment(myCat, Y.EventTarget<em>, true, null, {
+    emitFacade: true,
+    prefix: 'cat'
+}</em>);
+
+myCat.on('hork', function (<em>e</em>) { ... });
+
+myCat.fire('hork');
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="defaultFn" class="yui3-slide">
+    <div>
+        <h2><code>defaultFn</code></h2>
+
+        <pre><code>myCat.publish('hork', {
+    <em>defaultFn</em>: <em>function (e)</em> {
+        show(e.location + " is now stained.");
+    }
+});
+
+myCat.on('hork', function (e) {
+    <em>e.preventDefault();</em>
+    show("Oh no you don't!");
+});
+
+myCat.fire('hork', { location: 'quilt' });
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="after" class="yui3-slide">
+    <div>
+        <h2><code>target.after(...)</code></h2>
+
+        <pre><code>
+myCat.<em>after</em>('hork', function (e) {
+    show("My " + e.location + " is ruined!");
+});
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="preventable" class="yui3-slide">
+    <div>
+        <h2><code>preventable</code></h2>
+
+        <pre><code>
+myCat.publish('hork', {
+    defaultFn: ...,
+    <em>preventable: false</em>
+});
+
+myCat.fire('hork', { location: 'new shirt' });
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="preventedFn" class="yui3-slide">
+    <div>
+        <h2><code>preventedFn</code></h2>
+
+        <pre><code>
+myCat.publish('hork', {
+    defaultFn: ...,
+    <em>preventedFn</em>: <em>function ()</em> {
+        this.fire('scratch', {
+            object: 'hand'
+        });
+    }
+});
+
+myCat.fire('hork', { location: 'crib' });
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="fireOnce" class="yui3-slide">
+    <div>
+        <h2><code>fireOnce</code></h2>
+
+        <pre><code>
+softcell.publish("hit", {
+    <em>fireOnce: true</em>
+});
+
+softcell.on("hit", profit);
+
+// YES
+softcell.fire("hit", { song: "Tainted Love" });
+// NO
+softcell.fire("hit", { song: "Bedsitter" });
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="broadcast1" class="yui3-slide">
+    <div>
+        <h2><code>broadcast: 1</code></h2>
+
+        <pre><code>
+Y.augment(Band, Y.EventTarget, true, null {
+    emitFacade: true,
+    <em>prefix: 'band'</em>
+});
+
+var rebecca = new Band("Rebecca Black");
+rebecca.publish("song", {
+    <em>broadcast: 1</em>
+});
+
+<em>Y.on</em>('<em>band:song</em>', launchMeme);
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="broadcast2" class="yui3-slide">
+    <div>
+        <h2><code>broadcast: 2</code></h2>
+
+        <pre><code>
+beatles.publish('song', {
+    <em>broadcast: 2</em>
+});
+
+<em>Y.Global.on</em>('<em>band:song</em>', buyAlbum);
+
+<em>YUI()</em>.use('node', function (Y2) {
+    <em>Y2.Global.on</em>('band:song', changeChannel);
+});
+
+beatles.fire("song", { name: "Revolution" });
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="bubbles" class="yui3-slide">
+    <div>
+        <h2><code>bubbles</code></h2>
+
+        <pre><code>milliVanilli.publish("song", {
+    <em>bubbles: true,</em>
+    defaultFn: ...
+});
+
+milliVanilli.<em>addTarget</em>(agent);
+
+milliVanilli.scandal = true;
+
+<em>agent.on</em>('band:song', function (e) {
+    <em>e.preventDefault();</em>
+});
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="stopProp" class="yui3-slide">
+    <div>
+        <h2><code>e.stopPropagation()</code></h2>
+
+        <pre><code>
+milliVanilli.on("song", function (e) {
+    <em>e.stopPropagation();</em>
+});
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="stoppedFn" class="yui3-slide">
+    <div>
+        <h2><code>stoppedFn</code></h2>
+
+        <pre><code>
+milliVanilli.publish("song", {
+    ...
+    <em>stoppedFn</em>: <em>function ()</em> { ... }
+});
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="async" class="yui3-slide">
+    <div>
+        <h2><code>async</code></h2>
+
+        <pre><code>
+metallica.publish('concertstart', {
+    fireOnce: true,
+    <em>async: true</em>
+});
+
+metallica.on('concertstart', function () {
+    show("\m/");
+});
+
+myApp.fire('concertstart');
+
+show("Are you ready to Rock?!");
+        </code></pre>
+    </div>
+    </li>
+
+    <li id="blank" class="yui3-slide">
+    <div>
+        <p class="solo"><strong>Time!</strong></p>
+    </div>
+    </li>
+
+    <li id="done" class="yui3-slide">
+    <div>
+        <h2>Homework</h2>
+
+        <ul>
+            <li><code>silent</code></li>
+            <li><code>queuable</code></li>
+            <li><code>defaultTargetOnly</code></li>
+            <li><code>context</code></li>
+            <li><code>contextFn</code></li>
+            <li><code>signature</code></li>
+            <li><code>monitored</code></li>
+            <li>AOP/duck punching via on(...), before(...), and after(...)</li>
+            <li>more...</li>
+        </ul>
+    </div>
+    </li>
+
+    <li id="end" class="yui3-slide">
+    <div>
+        <pre><code>
+slideshow.fire('end', {
+    message: '<em>Thank you</em>',
+    contact: {
+        name   : 'Luke Smith',
+        twitter: '@ls_n'
+    }
+});
+        </code></pre>
+    </li>
+</ul>
+</div>
+<script>
+(function (d) {
+    var heightRule, vCenterRule;
+
+    // Create a stylesheet and cache two rules to update during window resize
+    (function (style) {
+        var css = '.yui3-slide { min-height: 700px; } ' +
+                  '.solo { line-height: 2; margin: 0; }',
+            sheet, rules;
+
+        style.type = 'text/css';
+        if (style.styleSheet) {
+            style.styleSheet.cssText = css;
+        } else {
+            style.appendChild(d.createTextNode(css));
+        }
+
+        d.getElementsByTagName('head')[0].appendChild(style);
+
+        sheet = style.sheet || style.styleSheet;
+        rules = sheet.cssRules || sheet.rules;
+        heightRule  = rules[0];
+        vCenterRule = rules[1];
+    })(d.createElement('style'));
+
+    function setSlideHeight() {
+        var height = (d.defaultView || d.parentWindow).innerHeight - 20;
+            offset = d.getElementsByTagName('h2')[0].offsetHeight * 2;
+
+        heightRule.style.minHeight = height + 'px';
+        vCenterRule.style.lineHeight = (height - offset) + 'px';
+    }
+
+    setSlideHeight();
+
+    window.onresize = window.onorientationchange = setSlideHeight;
+
+})(document);
+</script>
+</body>
+</html>
